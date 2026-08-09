@@ -28,20 +28,21 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: ./zydus-bill-view/package-lock.json
 
       - name: Install dependencies
-        working-directory: zydus-bill-view
+        working-directory: ./zydus-bill-view
         run: npm ci
 
       - name: Build and export Next.js (static)
         env:
           # Provide the public API URL to the client build
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-        working-directory: zydus-bill-view
+        working-directory: ./zydus-bill-view
         run: |
-          npm run build
-          # Export static files to the `out` directory so Pages can serve them
-          npx next export -o out
+          # `next.config.ts` sets `output: 'export'` and `distDir: 'out'`.
+          # Run the package script that builds/exports static files.
+          npm run export
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
